@@ -2,126 +2,215 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Animaux Ninja Magiques</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja des Animaux</title>
     <style>
         body {
-            font-family: 'Comic Sans MS', cursive;
-            background: #f0f9ff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
             padding: 20px;
         }
-
-        .container {
-            text-align: center;
-            max-width: 600px;
-        }
-
+        
         h1 {
             color: #ff6b6b;
-            text-shadow: 2px 2px #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-
-        #card {
-            background: white;
+        
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
         }
-
-        #card.visible {
-            opacity: 1;
-            transform: translateY(0);
+        
+        .animal-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
         }
-
-        .animal-img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            margin: 10px;
-            animation: bounce 1s infinite alternate;
-        }
-
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 18px;
-            cursor: pointer;
+        
+        .animal-card {
+            width: 120px;
+            background-color: #fffacd;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.3s;
         }
-
+        
+        .animal-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .animal-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+        
+        .animal-name {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .animal-ability {
+            font-size: 12px;
+            color: #555;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
         button:hover {
-            transform: scale(1.1);
+            background-color: #45a049;
         }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        
+        @media (max-width: 600px) {
+            .animal-card {
+                width: 100px;
+            }
+            
+            .animal-img {
+                width: 60px;
+                height: 60px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🦸♂️ Animaux Ninja Magiques! 🐾</h1>
-        <div id="card">
-            <h2 id="animal-name"></h2>
-            <img class="animal-img" id="animal-image" src="" alt="Animal">
+    <div class="game-container">
+        <h1>Ninja des Animaux</h1>
+        <p>Choisis ton animal et prépare-toi à combattre !</p>
+        
+        <div class="controls">
+            <button id="startBtn">Commencer le jeu</button>
+            <button id="rulesBtn">Voir les règles</button>
         </div>
-        <button id="action-btn" onclick="revealAnimal()">Révéler un Animal !</button>
+        
+        <div class="animal-grid" id="animalGrid">
+            <!-- Les cartes animaux seront générées ici par JavaScript -->
+        </div>
     </div>
 
     <script>
+        // Données des animaux
         const animals = [
             {
-                name: "Grenouille Ninja",
-                image: "data:image/png;base64,INSERT_BASE64_1" // Remplacer par votre image
+                name: "Lion",
+                emoji: "🦁",
+                attack: "Rugir et griffer",
+                defense: "Se cacher derrière un rocher",
+                special: "Faire reculer tous les joueurs"
             },
             {
-                name: "Dragon Feu",
-                image: "data:image/png;base64,INSERT_BASE64_2" // Remplacer par votre image
+                name: "Éléphant",
+                emoji: "🐘",
+                attack: "Balancer la trompe",
+                defense: "Dormir debout sur une patte",
+                special: "Asperser de l'eau pour dégeler"
+            },
+            {
+                name: "Singe",
+                emoji: "🐒",
+                attack: "Lancer des bananes",
+                defense: "Grimper à un arbre",
+                special: "Voler la défense d'un autre"
+            },
+            {
+                name: "Grenouille",
+                emoji: "🐸",
+                attack: "Sauter et toucher avec la langue",
+                defense: "S'accroupir immobile",
+                special: "Invincibilité après 3 sauts"
+            },
+            {
+                name: "Oiseau",
+                emoji: "🐦",
+                attack: "Battre des ailes",
+                defense: "Se percher sur une branche",
+                special: "Libérer un ami en chantant"
+            },
+            {
+                name: "Serpent",
+                emoji: "🐍",
+                attack: "Onduler et toucher les pieds",
+                defense: "S'enrouler en spirale",
+                special: "Transformer les autres en serpents"
+            },
+            {
+                name: "Chat",
+                emoji: "🐱",
+                attack: "Griffer et miauler",
+                defense: "Se mettre en boule",
+                special: "9 vies (revivre après 5 secondes)"
+            },
+            {
+                name: "Chien",
+                emoji: "🐶",
+                attack: "Aboier et courir",
+                defense: "Faire le chien assis",
+                special: "Remuer la queue pour libérer"
+            },
+            {
+                name: "Ours",
+                emoji: "🐻",
+                attack: "Faire un gros câlin",
+                defense: "Ronfler en dormant",
+                special: "Marcher à 4 pattes"
+            },
+            {
+                name: "Pingouin",
+                emoji: "🐧",
+                attack: "Glisser sur le ventre",
+                defense: "Se tenir droit comme un glaçon",
+                special: "Faire glisser tout le monde"
             }
-            // Ajouter d'autres animaux ici...
         ];
 
-        let currentAnimal = null;
-
-        function revealAnimal() {
-            const card = document.getElementById('card');
-            const btn = document.getElementById('action-btn');
+        // Générer les cartes animaux
+        const animalGrid = document.getElementById('animalGrid');
+        
+        animals.forEach(animal => {
+            const card = document.createElement('div');
+            card.className = 'animal-card';
             
-            if (!currentAnimal) {
-                // Choisir un animal aléatoire
-                currentAnimal = animals[Math.floor(Math.random() * animals.length)];
-                
-                // Mettre à jour l'affichage
-                document.getElementById('animal-name').textContent = currentAnimal.name;
-                document.getElementById('animal-image').src = currentAnimal.image;
-                
-                // Animation
-                card.classList.add('visible');
-                btn.textContent = "Faire disparaître !";
-            } else {
-                // Réinitialiser
-                card.classList.remove('visible');
-                currentAnimal = null;
-                btn.textContent = "Révéler un Animal !";
-            }
-        }
+            card.innerHTML = `
+                <div class="animal-emoji" style="font-size: 50px;">${animal.emoji}</div>
+                <div class="animal-name">${animal.name}</div>
+                <div class="animal-ability"><strong>Attaque:</strong> ${animal.attack}</div>
+                <div class="animal-ability"><strong>Défense:</strong> ${animal.defense}</div>
+                <div class="animal-ability"><strong>Spécial:</strong> ${animal.special}</div>
+            `;
+            
+            animalGrid.appendChild(card);
+        });
+
+        // Gestion des boutons
+        document.getElementById('startBtn').addEventListener('click', () => {
+            alert("Le jeu commence ! Le premier joueur est le Lion. Imitez son attaque !");
+        });
+        
+        document.getElementById('rulesBtn').addEventListener('click', () => {
+            alert("RÈGLES DU JEU:\n\n1. Chaque joueur choisit un animal\n2. À tour de rôle, imitez l'attaque de votre animal\n3. Les autres doivent se défendre\n4. Utilisez votre pouvoir spécial quand c'est votre tour\n5. Dégeler les amis gelés en imitant leur animal");
+        });
     </script>
 </body>
 </html>
